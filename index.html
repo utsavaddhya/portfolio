@@ -742,6 +742,38 @@ footer{
 /* ══════════════════════════════
    RESPONSIVE
 ══════════════════════════════ */
+/* ══════════════════════════════
+   MOBILE SHOWCASE (vertical snap-stack, phone-frame iframes)
+══════════════════════════════ */
+.mobile-showcase-intro{padding:0 6vw 24px;display:none;}
+.mobile-showcase-intro p{font-size:.8rem;line-height:1.8;color:var(--muted2);max-width:520px;}
+.mobile-showcase-intro p em{color:var(--indigo2);font-style:normal;}
+#mobileShowcaseStack{display:none;}
+@media(max-width:900px){
+  .mobile-showcase-intro{display:block;}
+  #mobileShowcaseStack{display:flex;flex-direction:column;gap:0;scroll-snap-type:y proximity;}
+  .mob-card{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:64px 7vw;scroll-snap-align:start;position:relative;}
+  .mob-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 30%,var(--card-glow,rgba(108,99,255,0.06)) 0%,transparent 70%);pointer-events:none;}
+  .mob-num{font-family:var(--display);font-size:3.5rem;line-height:1;color:rgba(255,255,255,0.05);margin-bottom:-8px;}
+  .mob-cat{font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--card-accent,var(--indigo));margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .mob-cat::before{content:'';width:16px;height:1px;background:currentColor;}
+  .mob-title{font-family:var(--display);font-size:clamp(2.2rem,9vw,3rem);line-height:.95;letter-spacing:1px;color:var(--white);margin-bottom:10px;}
+  .mob-desc{font-size:.8rem;line-height:1.7;color:var(--muted2);max-width:90vw;margin-bottom:24px;}
+  .phone-frame{width:min(78vw,300px);margin:0 auto;border:8px solid #0b0b14;border-radius:34px;background:#000;box-shadow:0 30px 80px rgba(0,0,0,0.65),0 0 0 1px var(--border2),0 0 50px var(--card-glow,rgba(108,99,255,0.1));overflow:hidden;position:relative;opacity:0;transform:translateY(40px) rotateX(8deg) scale(.94);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+  .phone-frame.in-view{opacity:1;transform:translateY(0) rotateX(0) scale(1);}
+  .phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:38%;height:18px;background:#0b0b14;border-radius:0 0 12px 12px;z-index:3;}
+  .phone-screen{position:relative;width:100%;padding-top:205%;background:var(--bg3);border-radius:22px;overflow:hidden;}
+  .phone-screen iframe{position:absolute;inset:0;width:300%;height:300%;transform:scale(0.3333);transform-origin:top left;border:none;}
+  .phone-tap-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--card-accent,var(--indigo));background:rgba(5,5,10,0.7);backdrop-filter:blur(6px);padding:5px 10px;border-radius:20px;border:1px solid var(--border2);z-index:4;white-space:nowrap;}
+  .mob-link{display:inline-flex;align-items:center;gap:10px;font-size:9px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--card-accent,var(--indigo));border-bottom:1px solid currentColor;padding-bottom:3px;margin:18px auto 0;width:fit-content;}
+  .mob-self .mob-title{background:linear-gradient(135deg,var(--white),var(--indigo2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .mob-self-card{width:min(78vw,300px);margin:0 auto;border:1px solid var(--indigo);border-radius:22px;background:var(--bg3);padding:28px 22px;box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 50px rgba(108,99,255,0.15);text-align:left;opacity:0;transform:translateY(40px);transition:opacity .7s,transform .7s;}
+  .mob-self-card.in-view{opacity:1;transform:translateY(0);}
+  .mob-self-logo{font-family:var(--display);font-size:1.6rem;letter-spacing:5px;color:var(--white);margin-bottom:4px;}
+  .mob-self-logo span{color:var(--indigo);}
+  .mob-self-tag{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted2);}
+}
+
 @media(max-width:900px){
   nav{padding:0 24px;}
   .nav-links,.nav-cta{display:none;}
@@ -754,6 +786,7 @@ footer{
   .pricing-grid{grid-template-columns:1fr;}
   #services,#process,#pricing,#about,#contact{padding:80px 24px;}
   footer{padding:36px 24px;flex-direction:column;text-align:center;}
+  .showcase-sticky,.showcase-progress{display:none;}
   .showcase-panel{flex-direction:column;padding:80px 6vw 40px;}
   .panel-left,.panel-right{flex:none;width:100%;}
   .panel-right{display:none;}
@@ -854,13 +887,19 @@ footer{
   </div>
 </section>
 
-<!-- ══════════════════ HORIZONTAL SHOWCASE ══════════════════ -->
+<!-- ══════════════════ HORIZONTAL SHOWCASE (desktop) / VERTICAL STACK (mobile) ══════════════════ -->
 <div id="showcase-section">
+  <div class="mobile-showcase-intro">
+    <p>A taste of range, not a template. <em>Every one of these is a fully built, independent site</em> — tap any to explore it live. When we build for you, your site is designed from scratch around your brand, your customers, your voice. Consider these references, not what you'll get.</p>
+  </div>
   <div class="showcase-sticky" id="showcaseSticky">
     <div class="showcase-track" id="showcaseTrack">
       <!-- panels injected by JS -->
     </div>
     <div class="showcase-progress" id="showcaseProgress"></div>
+  </div>
+  <div id="mobileShowcaseStack">
+    <!-- mobile cards injected by JS -->
   </div>
 </div>
 
@@ -1254,6 +1293,52 @@ function buildShowcase(){
   attachHoverables();
 }
 buildShowcase();
+
+/* ── MOBILE VERTICAL SHOWCASE ── */
+function buildMobileShowcase(){
+  const stack = document.getElementById('mobileShowcaseStack');
+  let html = '';
+  SITES.forEach((s,i)=>{
+    html += `
+    <div class="mob-card" style="--card-glow:${s.glow};--card-accent:${s.accent};" data-mob-index="${i}">
+      <div class="mob-num">0${i+1}</div>
+      <div class="mob-cat">${s.cat}</div>
+      <div class="mob-title">${s.headline[0]} ${s.headline[1]}</div>
+      <div class="mob-desc">${s.desc}</div>
+      <div class="phone-frame" data-frame>
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <iframe src="${s.url}" loading="lazy" title="${s.name}" tabindex="-1" scrolling="no"></iframe>
+        </div>
+        <div class="phone-tap-hint">Tap to open live ↗</div>
+      </div>
+      <a class="mob-link" href="${s.url}" target="_blank" rel="noopener">View Live Site →</a>
+    </div>`;
+  });
+
+  html += `
+  <div class="mob-card mob-self" data-mob-index="9">
+    <div class="mob-num">10</div>
+    <div class="mob-cat" style="color:var(--indigo2);">Portfolio Site</div>
+    <div class="mob-title">THIS. RIGHT HERE.</div>
+    <div class="mob-desc">You're not looking at an example — you're inside it. This very page is built to represent everything we can do for you, on every screen.</div>
+    <div class="mob-self-card" data-frame>
+      <div class="mob-self-logo">PRES<span>·</span>ENSE</div>
+      <div class="mob-self-tag">Digital Presence Studio</div>
+    </div>
+    <a class="mob-link" href="#contact" style="color:var(--indigo2);">Start Your Project →</a>
+  </div>`;
+
+  stack.innerHTML = html;
+
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  },{threshold:0.3});
+  stack.querySelectorAll('[data-frame]').forEach(el=>observer.observe(el));
+}
+buildMobileShowcase();
 
 /* ── SHOWCASE SCROLL LOGIC ── */
 function setupShowcaseScroll(){
