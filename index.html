@@ -57,23 +57,8 @@ img{display:block;max-width:100%;}
 /* ══════════════════════════════
    CURSOR
 ══════════════════════════════ */
-#cur-dot{
-  position:fixed;top:0;left:0;width:5px;height:5px;
-  background:var(--indigo);border-radius:50%;
-  pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:width .2s,height .2s,background .2s;
-  mix-blend-mode:screen;
-}
-#cur-ring{
-  position:fixed;top:0;left:0;width:36px;height:36px;
-  border:1px solid rgba(108,99,255,0.4);border-radius:50%;
-  pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:transform .06s linear;
-}
-body.hovering #cur-dot{width:14px;height:14px;background:var(--gold);}
-body.hovering #cur-ring{opacity:0;}
+
+
 
 /* ══════════════════════════════
    NAV
@@ -817,9 +802,7 @@ footer{
 <!-- progress bar -->
 <div id="progress-bar"></div>
 
-<!-- cursor -->
-<div id="cur-dot"></div>
-<div id="cur-ring"></div>
+
 
 <!-- toast -->
 <div class="toast" id="toast"></div>
@@ -1305,9 +1288,6 @@ function buildShowcase(){
   let dotsHtml = '';
   for(let i=0;i<10;i++) dotsHtml += `<div class="sp-dot${i===0?' active':''}" id="spd${i}"></div>`;
   progress.innerHTML = dotsHtml;
-
-  /* re-attach hover listeners */
-  attachHoverables();
 }
 buildShowcase();
 
@@ -1480,26 +1460,7 @@ const procObs = new IntersectionObserver(entries=>{
 document.querySelectorAll('.process-step').forEach(el=>procObs.observe(el));
 
 /* ── CURSOR ── */
-const dot=document.getElementById('cur-dot');
-const ring=document.getElementById('cur-ring');
-let mx2=0,my2=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx2=e.clientX;my2=e.clientY;
-  dot.style.left=mx2+'px';dot.style.top=my2+'px';
-});
-(function ringLoop(){
-  rx+=(mx2-rx)*.09;ry+=(my2-ry)*.09;
-  ring.style.left=rx+'px';ring.style.top=ry+'px';
-  requestAnimationFrame(ringLoop);
-})();
 
-function attachHoverables(){
-  document.querySelectorAll('.hoverable,a,button').forEach(el=>{
-    el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
-    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
-  });
-}
-attachHoverables();
 
 /* ── HAMBURGER ── */
 const hamEl=document.getElementById('ham');
