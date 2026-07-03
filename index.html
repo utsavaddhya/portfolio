@@ -29,13 +29,12 @@
 }
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:16px;scroll-behavior:smooth;overflow-x:hidden;}
+html{font-size:16px;scroll-behavior:smooth;}
 body{
   background:var(--bg);
   color:var(--white);
   font-family:var(--body);
   font-weight:300;
-  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 ::-webkit-scrollbar{width:2px;}
@@ -751,6 +750,7 @@ footer{
 .mobile-showcase-intro p em{color:var(--indigo2);font-style:normal;}
 #mobileShowcaseStack{display:none;}
 @media(max-width:900px){
+  html,body{overflow-x:hidden;}
   #showcase-section{max-width:100vw;overflow-x:hidden;}
   .mobile-showcase-intro{display:block;}
   #mobileShowcaseStack{display:flex;flex-direction:column;gap:0;scroll-snap-type:y proximity;}
