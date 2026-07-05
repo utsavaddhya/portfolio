@@ -60,10 +60,34 @@ img{display:block;max-width:100%;}
 
 
 /* ══════════════════════════════
+   CUSTOM CURSOR (desktop only)
+══════════════════════════════ */
+.cursor-dot,.cursor-ring{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9500;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  will-change:transform;
+}
+.cursor-dot{
+  width:6px;height:6px;background:var(--indigo2,var(--indigo));
+  transition:opacity .2s;
+}
+.cursor-ring{
+  width:34px;height:34px;border:1px solid var(--indigo);
+  opacity:.6;
+  transition:width .25s,height .25s,opacity .25s,border-color .25s,background .25s;
+}
+.cursor-ring.hover{
+  width:64px;height:64px;background:rgba(108,99,255,0.08);opacity:1;
+}
+.cursor-ring.click{width:26px;height:26px;}
+body.cursor-active,body.cursor-active *{cursor:none !important;}
+
+/* ══════════════════════════════
    NAV
 ══════════════════════════════ */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:800;
+  position:fixed;top:0;left:0;right:0;z-index:900;
   height:68px;display:flex;align-items:center;justify-content:space-between;
   padding:0 52px;
   transition:background .35s,border-color .35s;
@@ -107,13 +131,13 @@ nav.solid{
   background:var(--indigo);color:var(--bg);
   box-shadow:0 0 24px rgba(108,99,255,0.4);
 }
-.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:810;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:910;position:relative;}
 .ham span{width:24px;height:1px;background:var(--white);transition:.3s;display:block;}
 .ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
 .ham.open span:nth-child(2){opacity:0;}
 .ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
 .mob-menu{
-  display:none;position:fixed;inset:0;z-index:800;
+  display:none;position:fixed;inset:0;z-index:850;
   background:rgba(5,5,10,.98);
   flex-direction:column;align-items:center;justify-content:center;gap:40px;
 }
@@ -751,6 +775,8 @@ footer{
 #mobileShowcaseStack{display:none;}
 @media(max-width:900px){
   html,body{overflow-x:hidden;}
+  .cursor-dot,.cursor-ring{display:none;}
+  body.cursor-active,body.cursor-active *{cursor:auto !important;}
   #showcase-section{max-width:100vw;overflow-x:hidden;}
   .mobile-showcase-intro{display:block;}
   #mobileShowcaseStack{display:flex;flex-direction:column;gap:0;scroll-snap-type:y proximity;}
@@ -798,6 +824,8 @@ footer{
 </style>
 </head>
 <body>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- progress bar -->
 <div id="progress-bar"></div>
@@ -1344,6 +1372,7 @@ function setupShowcaseScroll(){
   const PANELS = 10;
 
   function update(){
+    if(window.innerWidth <= 900) return;
     const rect = section.getBoundingClientRect();
     const sectionH = section.offsetHeight;
     const scrolled = -rect.top;
@@ -1365,10 +1394,15 @@ function setupShowcaseScroll(){
   update();
 }
 
-/* Set showcase section height = 100vh * panels (scroll distance) */
+/* Set showcase section height = 100vh * panels (scroll distance) — desktop only.
+   On mobile the section uses natural content height (vertical card stack). */
 function setShowcaseHeight(){
   const section = document.getElementById('showcase-section');
-  section.style.height = (10 * 100) + 'vh';
+  if(window.innerWidth <= 900){
+    section.style.height = 'auto';
+  } else {
+    section.style.height = (10 * 100) + 'vh';
+  }
 }
 setShowcaseHeight();
 window.addEventListener('resize', setShowcaseHeight);
@@ -1460,6 +1494,43 @@ const procObs = new IntersectionObserver(entries=>{
 document.querySelectorAll('.process-step').forEach(el=>procObs.observe(el));
 
 /* ── CURSOR ── */
+(function(){
+  const isDesktop = window.matchMedia('(min-width:901px) and (pointer:fine)').matches;
+  if(!isDesktop) return;
+
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  document.body.classList.add('cursor-active');
+
+  let mx=window.innerWidth/2, my=window.innerHeight/2;
+  let rx=mx, ry=my;
+
+  document.addEventListener('mousemove', e=>{
+    mx=e.clientX; my=e.clientY;
+    dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  });
+
+  function loop(){
+    rx += (mx-rx)*0.18;
+    ry += (my-ry)*0.18;
+    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  document.addEventListener('mousedown', ()=>ring.classList.add('click'));
+  document.addEventListener('mouseup', ()=>ring.classList.remove('click'));
+
+  document.addEventListener('mouseover', e=>{
+    if(e.target.closest('.hoverable, a, button')) ring.classList.add('hover');
+  });
+  document.addEventListener('mouseout', e=>{
+    if(e.target.closest('.hoverable, a, button')) ring.classList.remove('hover');
+  });
+
+  document.addEventListener('mouseleave', ()=>{dot.style.opacity='0';ring.style.opacity='0';});
+  document.addEventListener('mouseenter', ()=>{dot.style.opacity='1';ring.style.opacity='.6';});
+})();
 
 
 /* ── HAMBURGER ── */
